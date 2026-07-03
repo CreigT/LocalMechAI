@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LocalMechAI</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="command-bar">
+        <div class="brand-lockup">
+          <div class="mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div>
+            <p class="eyebrow">Windows diagnostics bay</p>
+            <h1>LocalMechAI</h1>
+          </div>
+        </div>
+        <div class="actions">
+          <div class="scan-state" id="scanState">Standby</div>
+          <button id="scanButton" type="button">Run Live Scan</button>
+        </div>
+      </header>
+
+      <section class="status-strip" aria-label="Current diagnostic status">
+        <article>
+          <span>System State</span>
+          <strong id="systemState">Loading</strong>
+        </article>
+        <article>
+          <span>Last Scan</span>
+          <strong id="lastScan">--</strong>
+        </article>
+        <article>
+          <span>Platform</span>
+          <strong id="platform">--</strong>
+        </article>
+        <article>
+          <span>AI Reasoning</span>
+          <strong id="provider">--</strong>
+        </article>
+      </section>
+
+      <section class="dashboard-grid primary-grid">
+        <article class="bay-panel diagnosis-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Root cause analysis</p>
+              <h2>Diagnosis</h2>
+            </div>
+            <span class="confidence" id="confidence">-- confidence</span>
+          </div>
+          <p class="summary" id="summary">Loading local diagnostics...</p>
+          <div id="findings" class="findings"></div>
+        </article>
+
+        <article class="bay-panel gauges-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Live vitals</p>
+              <h2>System Load</h2>
+            </div>
+          </div>
+          <div class="gauge-grid">
+            <div class="gauge-card">
+              <div class="gauge" id="cpuGauge"><span id="cpu">--</span></div>
+              <p>CPU</p>
+            </div>
+            <div class="gauge-card">
+              <div class="gauge" id="memoryGauge"><span id="memory">--</span></div>
+              <p>Memory</p>
+            </div>
+            <div class="gauge-card">
+              <div class="gauge" id="swapGauge"><span id="swap">--</span></div>
+              <p>Swap</p>
+            </div>
+          </div>
+          <div class="spec-list">
+            <div><span>CPU Threads</span><strong id="cpuCount">--</strong></div>
+            <div><span>RAM Used</span><strong id="memoryUsed">--</strong></div>
+            <div><span>Boot Time</span><strong id="bootTime">--</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="dashboard-grid split-grid">
+        <article class="bay-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Storage inspection</p>
+              <h2>Disks</h2>
+            </div>
+          </div>
+          <div id="disks" class="stack"></div>
+        </article>
+
+        <article class="bay-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Resource draw</p>
+              <h2>Top Processes</h2>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Process</th>
+                  <th>CPU</th>
+                  <th>Memory</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="processes"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="dashboard-grid split-grid">
+        <article class="bay-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Windows core services</p>
+              <h2>Service Check</h2>
+            </div>
+          </div>
+          <div id="services" class="service-grid"></div>
+        </article>
+
+        <article class="bay-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Recent system errors</p>
+              <h2>Event Log</h2>
+            </div>
+          </div>
+          <div id="events" class="event-list"></div>
+        </article>
+      </section>
+
+      <section class="bay-panel history-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Saved local reports</p>
+            <h2>Health Over Time</h2>
+          </div>
+          <span id="historyCount" class="confidence">-- reports</span>
+        </div>
+        <canvas id="historyChart" width="980" height="260"></canvas>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
