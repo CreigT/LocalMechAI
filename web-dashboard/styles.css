@@ -99,6 +99,78 @@ body::before {
   padding: 18px 20px;
 }
 
+.safety-banner,
+.quick-start {
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(145deg, rgba(242, 165, 26, 0.08), transparent 38%),
+    #15191b;
+}
+
+.safety-banner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  margin: 14px 0;
+  padding: 12px 16px;
+}
+
+.safety-banner strong {
+  color: var(--amber);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.safety-banner p {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.quick-start {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+}
+
+.quick-start ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  counter-reset: test-step;
+  list-style: none;
+}
+
+.quick-start li {
+  position: relative;
+  min-height: 64px;
+  border: 1px solid var(--line-soft);
+  padding: 10px 10px 10px 34px;
+  background: #101315;
+  color: #efe8dc;
+  line-height: 1.35;
+  counter-increment: test-step;
+}
+
+.quick-start li::before {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: var(--amber);
+  font-weight: 900;
+  content: counter(test-step);
+}
+
+.quick-start code {
+  color: var(--green);
+  overflow-wrap: anywhere;
+}
+
 .brand-lockup,
 .actions,
 .panel-head,
@@ -633,6 +705,11 @@ canvas {
     grid-template-columns: 1fr;
   }
 
+  .quick-start,
+  .quick-start ol {
+    grid-template-columns: 1fr;
+  }
+
   .command-bar,
   .actions {
     grid-template-columns: 1fr;
@@ -653,7 +730,8 @@ canvas {
   }
 
   .gauge-grid,
-  .service-grid {
+  .service-grid,
+  .safety-banner {
     grid-template-columns: 1fr;
   }
 
