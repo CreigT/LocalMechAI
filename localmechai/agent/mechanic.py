@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from ..models import Finding, HealthReport
 from ..storage import latest_report, load_reports
+from .local_client import send_local_agent_command
 from .repairs import create_confirmation
 
 
@@ -26,6 +27,12 @@ class AgentAction:
 
 
 def answer_message(message: str) -> dict:
+    bridged = send_local_agent_command("message", {"message": message})
+    if bridged and bridged.get("status") == "success" and isinstance(bridged.get("result"), dict):
+        result = bridged["result"]
+        result.setdefault("provider", "local-agent-bridge")
+        return result
+
     report = latest_report()
     history = load_reports(limit=8)
     normalized = message.lower().strip()

@@ -68,3 +68,14 @@ No system data is sent anywhere unless you explicitly configure a non-local AI p
 ## Safety
 
 LocalMechAI recommends repairs but does not run invasive fixes automatically. Remediation steps are intentionally conservative and reversible where possible.
+
+## Netlify Path
+
+The repo also includes a Netlify-ready dashboard plus separate local Windows agent:
+
+- `web-dashboard/` contains the hosted dashboard files.
+- `local-agent/` runs locally on the user's Windows PC at `127.0.0.1:8766`.
+- `shared/` defines the command/scan/repair protocol.
+- `netlify.toml` publishes `web-dashboard/`.
+
+See `docs/netlify-local-agent.md` for the deployment model.

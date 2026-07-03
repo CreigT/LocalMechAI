@@ -1,0 +1,1 @@
+"""Shared LocalMechAI protocol models."""
