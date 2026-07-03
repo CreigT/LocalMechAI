@@ -35,6 +35,14 @@ The Netlify publish directory is:
 web-dashboard
 ```
 
+Netlify project settings:
+
+```text
+Base directory: empty / repository root
+Build command: empty
+Publish directory: web-dashboard
+```
+
 The hosted dashboard calls the local agent at `http://127.0.0.1:8766`. If the local agent is not running, the dashboard shows a real connection error rather than fake diagnostic data.
 
 ## Safety Model

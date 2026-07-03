@@ -1,4 +1,5 @@
 [build]
+  # Static dashboard: leave the Netlify build command blank.
   publish = "web-dashboard"
 
 [[headers]]
