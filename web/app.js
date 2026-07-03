@@ -1,5 +1,9 @@
 const scanButton = document.querySelector("#scanButton");
 const scanState = document.querySelector("#scanState");
+const agentForm = document.querySelector("#agentForm");
+const agentInput = document.querySelector("#agentInput");
+const agentSend = document.querySelector("#agentSend");
+const agentMessages = document.querySelector("#agentMessages");
 
 async function fetchJson(url, options) {
   const response = await fetch(url, options);
@@ -194,6 +198,72 @@ function renderHistory(reports) {
   drawLegend(ctx);
 }
 
+function addAgentMessage(message, type = "mechanic", actions = []) {
+  const element = document.createElement("article");
+  element.className = `agent-message ${type}`;
+  element.textContent = message;
+  if (actions.length) {
+    element.appendChild(renderAgentActions(actions));
+  }
+  agentMessages.appendChild(element);
+  agentMessages.scrollTop = agentMessages.scrollHeight;
+}
+
+function renderAgentActions(actions) {
+  const container = document.createElement("div");
+  container.className = "agent-actions";
+  for (const action of actions) {
+    const card = document.createElement("div");
+    card.className = "repair-card";
+    const title = document.createElement("strong");
+    title.textContent = action.title;
+    const description = document.createElement("p");
+    description.textContent = action.description;
+    const meta = document.createElement("div");
+    meta.className = "repair-meta";
+    const risk = document.createElement("span");
+    risk.textContent = `Risk: ${action.risk}`;
+    const confirmation = document.createElement("span");
+    confirmation.textContent = "Requires confirmation";
+    meta.append(risk, confirmation);
+
+    const button = document.createElement("button");
+    button.className = "confirm-repair";
+    button.type = "button";
+    button.textContent = `Confirm: ${action.title}`;
+    button.addEventListener("click", () => confirmRepair(action, button));
+
+    card.append(title, description, meta, button);
+    container.appendChild(card);
+  }
+  return container;
+}
+
+async function confirmRepair(action, button) {
+  button.disabled = true;
+  button.textContent = "Running confirmed action";
+  try {
+    const result = await fetchJson("/api/agent/repair", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action_id: action.action_id, token: action.token }),
+    });
+    addAgentMessage(result.message || "Repair action completed.", result.ok ? "result" : "mechanic");
+    if (result.ok) {
+      button.textContent = "Confirmed action complete";
+      const report = await fetchJson("/api/latest");
+      renderReport(report);
+    } else {
+      button.disabled = false;
+      button.textContent = `Retry: ${action.title}`;
+    }
+  } catch (error) {
+    addAgentMessage(error.message, "mechanic");
+    button.disabled = false;
+    button.textContent = `Retry: ${action.title}`;
+  }
+}
+
 function setGauge(selector, value) {
   const amount = clamp(Number(value || 0), 0, 100);
   const degrees = amount * 3.6;
@@ -317,6 +387,35 @@ scanButton.addEventListener("click", async () => {
   } finally {
     scanButton.disabled = false;
     scanButton.textContent = "Run Live Scan";
+  }
+});
+
+agentForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const message = agentInput.value.trim();
+  if (!message) return;
+
+  addAgentMessage(message, "user");
+  agentInput.value = "";
+  agentSend.disabled = true;
+  agentSend.textContent = "Thinking";
+  try {
+    const response = await fetchJson("/api/agent/message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
+    document.querySelector("#agentProvider").textContent = response.provider || "local-agent";
+    addAgentMessage(response.message || "I did not receive an agent response.", "mechanic", response.actions || []);
+    if (response.latest_report) {
+      renderReport(response.latest_report);
+    }
+  } catch (error) {
+    addAgentMessage(error.message, "mechanic");
+  } finally {
+    agentSend.disabled = false;
+    agentSend.textContent = "Ask Mechanic";
+    agentInput.focus();
   }
 });
 

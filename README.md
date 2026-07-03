@@ -25,6 +25,16 @@ Then open `http://127.0.0.1:8765`.
 
 ## Optional AI Providers
 
+### Google ADK Agent
+
+LocalMechAI includes an in-app AI Mechanic agent. It works locally with rule-based reasoning by default, and can be extended with Google ADK:
+
+```powershell
+pip install -e .[adk]
+```
+
+The app exposes only allowlisted repair actions, and every repair requires an explicit confirmation button press in the dashboard before anything runs.
+
 ### Ollama
 
 Install Ollama, pull a model, then set:

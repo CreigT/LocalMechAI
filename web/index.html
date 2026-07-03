@@ -87,6 +87,31 @@
         </article>
       </section>
 
+      <section class="bay-panel agent-panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Confirmed repair agent</p>
+            <h2>AI Mechanic</h2>
+          </div>
+          <span class="confidence" id="agentProvider">local-agent</span>
+        </div>
+        <div id="agentMessages" class="agent-messages" aria-live="polite">
+          <article class="agent-message mechanic">
+            Ask about slowdowns, update failures, Explorer, clipboard, disk, memory, or recurring issues. I use the latest real scan and will ask for confirmation before any repair runs.
+          </article>
+        </div>
+        <form id="agentForm" class="agent-form">
+          <input
+            id="agentInput"
+            name="message"
+            autocomplete="off"
+            placeholder="Ask the AI Mechanic what to fix next"
+            type="text"
+          />
+          <button id="agentSend" type="submit">Ask Mechanic</button>
+        </form>
+      </section>
+
       <section class="dashboard-grid split-grid">
         <article class="bay-panel">
           <div class="panel-head">

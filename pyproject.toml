@@ -8,5 +8,10 @@ dependencies = [
   "requests>=2.32.0"
 ]
 
+[project.optional-dependencies]
+adk = [
+  "google-adk>=1.0.0"
+]
+
 [tool.ruff]
 line-length = 100

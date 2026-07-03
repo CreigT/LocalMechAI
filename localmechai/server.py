@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from .app import run_scan
+from .agent import answer_message, execute_repair
 from .config import DEFAULT_HOST, DEFAULT_PORT, PROJECT_ROOT
 from .storage import latest_report, load_reports
 
@@ -37,6 +38,17 @@ class LocalMechHandler(SimpleHTTPRequestHandler):
             report = run_scan(save=True)
             self._send_json(report.to_dict())
             return
+        if path == "/api/agent/message":
+            payload = self._read_json()
+            message = str(payload.get("message") or "")
+            self._send_json(answer_message(message))
+            return
+        if path == "/api/agent/repair":
+            payload = self._read_json()
+            action_id = str(payload.get("action_id") or "")
+            token = str(payload.get("token") or "")
+            self._send_json(execute_repair(action_id, token))
+            return
         self.send_error(404, "Not found")
 
     def log_message(self, format: str, *args) -> None:
@@ -49,6 +61,17 @@ class LocalMechHandler(SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def _read_json(self) -> dict:
+        length = int(self.headers.get("Content-Length", "0") or "0")
+        if length <= 0:
+            return {}
+        raw = self.rfile.read(length)
+        try:
+            data = json.loads(raw.decode("utf-8"))
+        except json.JSONDecodeError:
+            return {}
+        return data if isinstance(data, dict) else {}
 
 
 def run_server(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT) -> None:

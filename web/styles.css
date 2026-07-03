@@ -269,7 +269,8 @@ button:disabled {
 
 .findings,
 .stack,
-.event-list {
+.event-list,
+.agent-messages {
   display: grid;
   gap: 12px;
 }
@@ -321,7 +322,8 @@ button:disabled {
 .finding p,
 .event-list p,
 .disk-row p,
-.gauge-card p {
+.gauge-card p,
+.agent-message {
   color: var(--muted);
 }
 
@@ -511,6 +513,101 @@ td {
   overflow-wrap: anywhere;
 }
 
+.agent-panel {
+  margin-bottom: 14px;
+}
+
+.agent-messages {
+  max-height: 440px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.agent-message {
+  border: 1px solid var(--line-soft);
+  border-left: 5px solid var(--blue);
+  padding: 12px 13px;
+  background: #15191b;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.agent-message.user {
+  border-left-color: var(--amber);
+  color: #efe8dc;
+}
+
+.agent-message.result {
+  border-left-color: var(--green);
+}
+
+.agent-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.repair-card {
+  border: 1px solid var(--line);
+  padding: 12px;
+  background:
+    linear-gradient(90deg, rgba(242, 165, 26, 0.08), transparent),
+    #101315;
+}
+
+.repair-card strong {
+  display: block;
+  color: var(--ink);
+}
+
+.repair-card p {
+  margin-top: 6px;
+}
+
+.repair-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.repair-meta span {
+  border: 1px solid var(--line);
+  padding: 4px 8px;
+  color: var(--amber);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.confirm-repair {
+  min-height: 36px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 3px 0 #5c390c;
+}
+
+.agent-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.agent-form input {
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 12px;
+  background: #101315;
+  color: var(--ink);
+  font: inherit;
+}
+
+.agent-form input:focus {
+  outline: 2px solid rgba(242, 165, 26, 0.45);
+  outline-offset: 1px;
+}
+
 .history-panel {
   margin-bottom: 0;
 }
@@ -543,6 +640,10 @@ canvas {
 
   .command-bar {
     display: grid;
+  }
+
+  .agent-form {
+    grid-template-columns: 1fr;
   }
 }
 
