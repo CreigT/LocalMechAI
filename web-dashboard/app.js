@@ -5,10 +5,16 @@ const agentInput = document.querySelector("#agentInput");
 const agentSend = document.querySelector("#agentSend");
 const agentMessages = document.querySelector("#agentMessages");
 const LOCAL_AGENT_URL = "http://127.0.0.1:8766";
-const isHostedDashboard = !["127.0.0.1", "localhost", ""].includes(window.location.hostname);
+const isBundledLocalApp =
+  ["127.0.0.1", "localhost"].includes(window.location.hostname) && window.location.port === "8765";
 
 async function fetchJson(url, options) {
-  const response = await fetch(url, options);
+  let response;
+  try {
+    response = await fetch(url, options);
+  } catch (error) {
+    throw new Error(connectionMessage(url));
+  }
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status}`);
   }
@@ -16,7 +22,7 @@ async function fetchJson(url, options) {
 }
 
 async function agentCommand(action, parameters = {}, token = "") {
-  if (!isHostedDashboard) {
+  if (isBundledLocalApp) {
     if (action === "scan") return fetchJson("/api/scan", { method: "POST" });
     if (action === "latest") return fetchJson("/api/latest");
     if (action === "history") return fetchJson("/api/history");
@@ -43,6 +49,13 @@ async function agentCommand(action, parameters = {}, token = "") {
   });
   if (response.status === "success") return response.result || {};
   throw new Error(response.message || "Local agent command failed.");
+}
+
+function connectionMessage(url) {
+  if (String(url).startsWith(LOCAL_AGENT_URL)) {
+    return "Cannot reach the LocalMechAI local agent. Start it on this Windows machine with: python local-agent/agent.py, then refresh the dashboard.";
+  }
+  return "Cannot reach the LocalMechAI local app API. Open the bundled app at http://127.0.0.1:8765 or use the web dashboard with the local agent running on port 8766.";
 }
 
 async function loadDashboard() {

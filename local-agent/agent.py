@@ -22,8 +22,8 @@ app = FastAPI(title="LocalMechAI Local Agent", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:8765", "http://localhost:8765", "https://localhost"],
-    allow_origin_regex=r"https://.*\.netlify\.app",
+    allow_origins=["http://127.0.0.1:8765", "http://localhost:8765", "https://localhost", "null"],
+    allow_origin_regex=r"(https://.*\.netlify\.app|http://(127\.0\.0\.1|localhost):\d+)",
     allow_methods=["POST", "GET", "OPTIONS"],
     allow_headers=["*"],
 )
