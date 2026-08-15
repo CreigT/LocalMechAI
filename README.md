@@ -1,15 +1,18 @@
 # LocalMechAI
 
-LocalMechAI is a local-first Windows system health and diagnostics agent. It scans CPU, memory, disk, processes, and common Windows failure signals, then explains likely root causes and safe remediation steps in plain language.
+A **local-first Windows system health and diagnostics agent** that scans CPU, memory, disk, processes, boot health, Windows services, and common failure signals, then explains likely causes and conservative remediation steps in plain language.
+
+LocalMechAI is designed around privacy, human approval, and safe diagnostics. It can use Ollama locally, fall back to deterministic reasoning, or optionally use a configured cloud AI provider.
 
 ## What It Does
 
-- Scans CPU, RAM, disk, process, boot, and Windows service health.
-- Detects common problems such as memory pressure, high CPU load, low disk space, Explorer instability, clipboard issues, and suspicious resource spikes.
-- Uses a local AI provider through Ollama when available.
-- Falls back to deterministic local reasoning when no model is configured.
-- Saves health snapshots over time for recurring issue tracking.
-- Serves a privacy-focused local dashboard.
+- Scans CPU, RAM, disk, process, boot, and Windows service health
+- Detects memory pressure, high CPU load, low disk space, Explorer instability, clipboard issues, and suspicious resource spikes
+- Uses a local AI provider through Ollama when available
+- Falls back to deterministic local reasoning when no model is configured
+- Saves health snapshots for recurring issue tracking
+- Serves a privacy-focused local dashboard
+- Keeps repair actions behind explicit user confirmation
 
 ## Quick Start
 
@@ -23,39 +26,39 @@ python -m localmechai.app serve
 
 Then open `http://127.0.0.1:8765`.
 
-## Optional AI Providers
+## AI Providers
 
-### Google ADK Agent
+### Local / Default
 
-LocalMechAI includes an in-app AI Mechanic agent. It works locally with rule-based reasoning by default, and can be extended with Google ADK:
-
-```powershell
-pip install -e .[adk]
-```
-
-The app exposes only allowlisted repair actions, and every repair requires an explicit confirmation button press in the dashboard before anything runs.
+LocalMechAI can operate without a cloud model using deterministic local reasoning.
 
 ### Ollama
-
-Install Ollama, pull a model, then set:
 
 ```powershell
 $env:LOCALMECHAI_AI_PROVIDER = "ollama"
 $env:LOCALMECHAI_OLLAMA_MODEL = "qwen2.5:7b"
 ```
 
-### Gemini
+The default `auto` mode tries Ollama first and then uses the local fallback.
 
-Gemini support is scaffolded for users who prefer a cloud model. Set:
+### Google ADK Agent
+
+```powershell
+pip install -e .[adk]
+```
+
+The application exposes only allowlisted repair actions, and every repair requires explicit confirmation in the dashboard before execution.
+
+### Gemini
 
 ```powershell
 $env:LOCALMECHAI_AI_PROVIDER = "gemini"
 $env:GEMINI_API_KEY = "your-key"
 ```
 
-The default mode is `auto`, which tries Ollama first and then uses the local fallback.
+Configuring a cloud provider changes the privacy boundary. Review what information will be transmitted before enabling one.
 
-## Data Location
+## Data and Privacy
 
 Reports are stored locally in:
 
@@ -63,19 +66,45 @@ Reports are stored locally in:
 data/reports.jsonl
 ```
 
-No system data is sent anywhere unless you explicitly configure a non-local AI provider.
+No system data is intended to leave the machine unless the user explicitly configures a non-local AI provider or another external integration.
 
-## Safety
+## Safety Model
 
-LocalMechAI recommends repairs but does not run invasive fixes automatically. Remediation steps are intentionally conservative and reversible where possible.
+LocalMechAI is intentionally conservative:
 
-## Netlify Path
+- Diagnosis does not automatically authorize remediation
+- Repair actions are allowlisted
+- Repairs require explicit user confirmation
+- Recommendations should favor reversible actions
+- High-impact system changes should fail closed rather than execute without authorization
 
-The repo also includes a Netlify-ready dashboard plus separate local Windows agent:
+## Netlify + Local Agent Architecture
 
-- `web-dashboard/` contains the hosted dashboard files.
-- `local-agent/` runs locally on the user's Windows PC at `127.0.0.1:8766`.
-- `shared/` defines the command/scan/repair protocol.
-- `netlify.toml` publishes `web-dashboard/`.
+The repository also contains a hosted-dashboard/local-agent model:
+
+- `web-dashboard/` — hosted dashboard files
+- `local-agent/` — Windows agent running at `127.0.0.1:8766`
+- `shared/` — command, scan, and repair protocol
+- `netlify.toml` — Netlify publishing configuration
 
 See `docs/netlify-local-agent.md` for the deployment model.
+
+## Security
+
+Do not commit API keys or credentials. Cloud-provider keys should be supplied through environment variables or an appropriate secrets manager.
+
+The local agent should remain bound to localhost unless a separate authenticated and encrypted remote-access design is intentionally implemented.
+
+## Verification
+
+Before treating a build as production-ready, verify installation, scan behavior, dashboard operation, AI-provider fallback, repair confirmation gates, and failure handling on a supported Windows environment.
+
+## Project Status
+
+**Active development / portfolio project.**
+
+LocalMechAI demonstrates the combination of AI-assisted diagnostics, local-first architecture, cybersecurity controls, and human-approved automation.
+
+---
+
+**Sponsored by CREIGNIFICENT LLC.**
